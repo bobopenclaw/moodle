@@ -10,11 +10,76 @@
     background-size: cover;
 }
 
+.path-mod-lesson.lesson-skin .lesson-skin-region-globalnavigation .tertiary-navigation {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.path-mod-lesson.lesson-skin .lesson-skin-region-progress {
+    margin-top: 1rem;
+}
+
 .path-mod-lesson.lesson-skin-cards .lesson-skin-stage,
 .path-mod-lesson.lesson-skin-roman .lesson-skin-stage,
 .path-mod-lesson.lesson-skin-ocean .lesson-skin-stage {
     border-radius: .75rem;
     padding: 1.25rem;
+}
+
+.path-mod-lesson.lesson-skin-cards .lesson-skin-stage {
+    display: grid;
+    gap: 1rem;
+    grid-template-areas:
+        "nav"
+        "attempt"
+        "score"
+        "main"
+        "progress";
+}
+
+.path-mod-lesson.lesson-skin-roman .lesson-skin-stage,
+.path-mod-lesson.lesson-skin-ocean .lesson-skin-stage {
+    display: grid;
+    gap: 1rem;
+    grid-template-areas:
+        "nav progress"
+        "attempt attempt"
+        "score score"
+        "main main";
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 18rem);
+}
+
+.path-mod-lesson.lesson-skin .lesson-skin-region-globalnavigation {
+    grid-area: nav;
+}
+
+.path-mod-lesson.lesson-skin .lesson-skin-region-attemptheading {
+    grid-area: attempt;
+}
+
+.path-mod-lesson.lesson-skin .lesson-skin-region-score {
+    grid-area: score;
+}
+
+.path-mod-lesson.lesson-skin .lesson-skin-region-main {
+    grid-area: main;
+}
+
+.path-mod-lesson.lesson-skin .lesson-skin-region-progress {
+    grid-area: progress;
+}
+
+@media (max-width: 767.98px) {
+    .path-mod-lesson.lesson-skin-roman .lesson-skin-stage,
+    .path-mod-lesson.lesson-skin-ocean .lesson-skin-stage {
+        grid-template-areas:
+            "nav"
+            "attempt"
+            "score"
+            "main"
+            "progress";
+        grid-template-columns: 1fr;
+    }
 }
 
 .path-mod-lesson.lesson-skin-cards .answeroption,

@@ -200,16 +200,35 @@ class mod_lesson_renderer extends plugin_renderer_base {
         $output = ob_get_contents();
         ob_end_clean();
 
+        return $output;
+    }
+
+    /**
+     * Returns HTML for the skinnable lesson page layout.
+     *
+     * @param lesson $lesson
+     * @param array $regions
+     * @return string
+     */
+    public function display_skin_page_layout(lesson $lesson, array $regions): string {
         $skin = lesson_get_skin($lesson->skin ?? 'standard');
-        $attributes = [
-            'class' => 'lesson-skin-stage lesson-skin-stage-' . $skin,
+
+        $context = [
+            'skin' => $skin,
+            'style' => lesson_get_skin_style($skin),
+            'globalnavigation' => $regions['globalnavigation'] ?? '',
+            'attemptheading' => $regions['attemptheading'] ?? '',
+            'score' => $regions['score'] ?? '',
+            'maincontentanchor' => $regions['maincontentanchor'] ?? '',
+            'content' => $regions['content'] ?? '',
+            'progress' => $regions['progress'] ?? '',
+            'hasglobalnavigation' => !empty($regions['globalnavigation']),
+            'hasattemptheading' => !empty($regions['attemptheading']),
+            'hasscore' => !empty($regions['score']),
+            'hasprogress' => !empty($regions['progress']),
         ];
 
-        if ($style = lesson_get_skin_style($skin)) {
-            $attributes['style'] = $style;
-        }
-
-        return html_writer::div($output, '', $attributes);
+        return $this->render_from_template('mod_lesson/skin_page', $context);
     }
 
     /**
