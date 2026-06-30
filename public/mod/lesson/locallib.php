@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 /** Include the files that are required by this module */
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot . '/mod/lesson/lib.php');
+require_once($CFG->libdir . '/ddllib.php');
 require_once($CFG->libdir . '/filelib.php');
 
 /** This page */
@@ -69,21 +70,168 @@ define("LESSON_OTHER_ANSWERS", "@#wronganswer#@");
 /// starts with lesson_
 
 /**
- * Returns the available lesson skins.
+ * Returns the default skin definitions used to seed the database.
  *
- * This is intentionally small for the prototype. A future implementation can
- * replace this list with discovery from lesson presentation subplugins.
+ * @return array
+ */
+function lesson_get_default_skin_definitions(): array {
+    $basepath = __DIR__ . '/presentation';
+    $defaults = [
+        'standard' => [
+            'title' => get_string('skin_standard', 'lesson'),
+            'description' => '',
+            'backgroundcolor' => '#ffffff',
+            'contentbackgroundcolor' => '#ffffff',
+            'accentcolor' => '#0f6cbf',
+            'answerbackgroundcolor' => '#ffffff',
+            'fontfamily' => 'inherit',
+        ],
+        'cards' => [
+            'title' => get_string('skin_cards', 'lesson'),
+            'description' => '',
+            'backgroundcolor' => '#f6f8fb',
+            'contentbackgroundcolor' => '#ffffff',
+            'accentcolor' => '#3454d1',
+            'answerbackgroundcolor' => '#ffffff',
+            'fontfamily' => 'inherit',
+        ],
+        'roman' => [
+            'title' => get_string('skin_roman', 'lesson'),
+            'description' => '',
+            'backgroundcolor' => '#fff8ec',
+            'contentbackgroundcolor' => '#fffaf1',
+            'accentcolor' => '#9f5f2a',
+            'answerbackgroundcolor' => '#fffaf1',
+            'fontfamily' => 'Georgia, "Times New Roman", serif',
+        ],
+        'ocean' => [
+            'title' => get_string('skin_ocean', 'lesson'),
+            'description' => '',
+            'backgroundcolor' => '#e8f7fb',
+            'contentbackgroundcolor' => '#ffffff',
+            'accentcolor' => '#007c89',
+            'answerbackgroundcolor' => '#ffffff',
+            'fontfamily' => 'inherit',
+        ],
+        'chaos' => [
+            'title' => get_string('skin_chaos', 'lesson'),
+            'description' => '',
+            'backgroundcolor' => '#fff6e9',
+            'contentbackgroundcolor' => '#fffbf2',
+            'accentcolor' => '#7b5fff',
+            'answerbackgroundcolor' => '#ffffff',
+            'fontfamily' => '"Comic Sans MS", "Comic Neue", "Trebuchet MS", cursive, sans-serif',
+        ],
+    ];
+
+    foreach ($defaults as $name => $definition) {
+        $templatefile = $basepath . '/' . $name . '/templates/page.mustache';
+        $cssfile = $basepath . '/' . $name . '/styles.css';
+        $defaults[$name]['template'] = file_exists($templatefile) ? file_get_contents($templatefile) : '';
+        $defaults[$name]['customcss'] = file_exists($cssfile) ? file_get_contents($cssfile) : '';
+    }
+
+    return $defaults;
+}
+
+/**
+ * Seeds the default Lesson skins into the database.
+ */
+function lesson_seed_default_skins(): void {
+    global $DB;
+
+    $dbman = $DB->get_manager();
+    if (!$dbman->table_exists(new xmldb_table('lesson_skins'))) {
+        return;
+    }
+
+    $sortorder = 10;
+    foreach (lesson_get_default_skin_definitions() as $name => $definition) {
+        if ($DB->record_exists('lesson_skins', ['name' => $name])) {
+            continue;
+        }
+
+        $record = (object) [
+            'name' => $name,
+            'title' => $definition['title'],
+            'description' => $definition['description'],
+            'template' => $definition['template'],
+            'customcss' => $definition['customcss'],
+            'fontfamily' => $definition['fontfamily'],
+            'backgroundcolor' => $definition['backgroundcolor'],
+            'contentbackgroundcolor' => $definition['contentbackgroundcolor'],
+            'accentcolor' => $definition['accentcolor'],
+            'answerbackgroundcolor' => $definition['answerbackgroundcolor'],
+            'enabled' => 1,
+            'sortorder' => $sortorder,
+            'timecreated' => time(),
+            'timemodified' => time(),
+        ];
+        $DB->insert_record('lesson_skins', $record);
+        $sortorder += 10;
+    }
+}
+
+/**
+ * Returns the available lesson skins.
  *
  * @return array
  */
 function lesson_get_available_skins(): array {
-    $skins = [];
-    foreach (core_component::get_plugin_list('lessonpresentation') as $name => $path) {
-        $component = 'lessonpresentation_' . $name;
-        $skins[$name] = get_string('pluginname', $component);
+    global $DB;
+
+    $dbman = $DB->get_manager();
+    if (!$dbman->table_exists(new xmldb_table('lesson_skins'))) {
+        return ['standard' => get_string('skin_standard', 'lesson')];
     }
 
-    return $skins ?: ['standard' => get_string('skin_standard', 'lesson')];
+    $records = $DB->get_records('lesson_skins', ['enabled' => 1], 'sortorder ASC, title ASC', 'name, title');
+    if (!$records) {
+        return ['standard' => get_string('skin_standard', 'lesson')];
+    }
+
+    $skins = [];
+    foreach ($records as $record) {
+        $skins[$record->name] = format_string($record->title);
+    }
+
+    return $skins;
+}
+
+/**
+ * Returns the selected Lesson skin record.
+ *
+ * @param string|null $skin
+ * @return stdClass
+ */
+function lesson_get_skin_record(?string $skin): stdClass {
+    global $DB;
+
+    $skin = clean_param($skin ?? 'standard', PARAM_ALPHANUMEXT);
+    $dbman = $DB->get_manager();
+    if ($skin && $dbman->table_exists(new xmldb_table('lesson_skins'))) {
+        if ($record = $DB->get_record('lesson_skins', ['name' => $skin, 'enabled' => 1])) {
+            return $record;
+        }
+    }
+
+    $defaults = lesson_get_default_skin_definitions();
+    $definition = $defaults['standard'];
+    return (object) [
+        'id' => 0,
+        'name' => 'standard',
+        'title' => $definition['title'],
+        'description' => $definition['description'],
+        'template' => $definition['template'],
+        'customcss' => $definition['customcss'],
+        'fontfamily' => $definition['fontfamily'],
+        'backgroundcolor' => $definition['backgroundcolor'],
+        'contentbackgroundcolor' => $definition['contentbackgroundcolor'],
+        'accentcolor' => $definition['accentcolor'],
+        'answerbackgroundcolor' => $definition['answerbackgroundcolor'],
+        'enabled' => 1,
+        'sortorder' => 10,
+    ];
 }
 
 /**
@@ -93,49 +241,42 @@ function lesson_get_available_skins(): array {
  * @return string
  */
 function lesson_get_skin(?string $skin): string {
-    $skin = clean_param($skin ?? 'standard', PARAM_ALPHANUMEXT);
-    return array_key_exists($skin, lesson_get_available_skins()) ? $skin : 'standard';
+    return lesson_get_skin_record($skin)->name;
 }
 
 /**
- * Returns the component name for a lesson skin.
+ * Builds the CSS emitted for a Lesson skin.
  *
- * @param string $skin
+ * @param stdClass $skin
  * @return string
  */
-function lesson_get_skin_component(string $skin): string {
-    return 'lessonpresentation_' . lesson_get_skin($skin);
-}
+function lesson_get_skin_css(stdClass $skin): string {
+    $name = clean_param($skin->name ?? 'standard', PARAM_ALPHANUMEXT);
+    $properties = [
+        '--lesson-skin-background' => $skin->backgroundcolor ?? '',
+        '--lesson-skin-content-background' => $skin->contentbackgroundcolor ?? '',
+        '--lesson-skin-accent' => $skin->accentcolor ?? '',
+        '--lesson-skin-answer-background' => $skin->answerbackgroundcolor ?? '',
+        '--lesson-skin-font-family' => $skin->fontfamily ?? '',
+    ];
 
-/**
- * Returns the Mustache template used to render a lesson skin.
- *
- * @param string $skin
- * @return string
- */
-function lesson_get_skin_template(string $skin): string {
-    $component = lesson_get_skin_component($skin);
-    if (core_component::get_component_directory($component)) {
-        return $component . '/page';
+    $declarations = [];
+    foreach ($properties as $property => $value) {
+        if ($value !== '') {
+            $declarations[] = $property . ': ' . $value . ';';
+        }
     }
 
-    return 'mod_lesson/skin_page';
-}
-
-/**
- * Returns the stylesheet URL for a lesson skin, if present.
- *
- * @param string $skin
- * @return moodle_url|null
- */
-function lesson_get_skin_stylesheet(string $skin): ?moodle_url {
-    $skin = lesson_get_skin($skin);
-    $path = core_component::get_plugin_directory('lessonpresentation', $skin);
-    if ($path && file_exists($path . '/styles.css')) {
-        return new moodle_url('/mod/lesson/presentation/' . $skin . '/styles.css');
+    $css = '';
+    if ($declarations) {
+        $css .= '.path-mod-lesson.lesson-skin-' . $name . ' {' . "\n";
+        $css .= '    ' . implode("\n    ", $declarations) . "\n";
+        $css .= "}\n\n";
     }
 
-    return null;
+    $css .= $skin->customcss ?? '';
+
+    return $css;
 }
 
 /**

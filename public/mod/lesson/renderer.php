@@ -211,10 +211,12 @@ class mod_lesson_renderer extends plugin_renderer_base {
      * @return string
      */
     public function display_skin_page_layout(lesson $lesson, array $regions): string {
-        $skin = lesson_get_skin($lesson->skin ?? 'standard');
+        $skin = lesson_get_skin_record($lesson->skin ?? 'standard');
+        $skinname = clean_param($skin->name ?? 'standard', PARAM_ALPHANUMEXT);
 
         $context = [
-            'skin' => $skin,
+            'skin' => $skinname,
+            'skintitle' => format_string($skin->title ?? ''),
             'globalnavigation' => $regions['globalnavigation'] ?? '',
             'attemptheading' => $regions['attemptheading'] ?? '',
             'score' => $regions['score'] ?? '',
@@ -227,7 +229,21 @@ class mod_lesson_renderer extends plugin_renderer_base {
             'hasprogress' => !empty($regions['progress']),
         ];
 
-        return $this->render_from_template(lesson_get_skin_template($skin), $context);
+        $template = trim($skin->template ?? '');
+        if ($template === '') {
+            $template = file_get_contents(__DIR__ . '/templates/skin_page.mustache');
+        }
+
+        $output = '';
+        $css = trim(lesson_get_skin_css($skin));
+        if ($css !== '') {
+            $output .= html_writer::tag('style', $css, ['data-lesson-skin' => $skinname]);
+        }
+
+        $mustache = new mustache_engine(['escape' => 's']);
+        $output .= trim($mustache->render($template, $context));
+
+        return $output;
     }
 
     /**

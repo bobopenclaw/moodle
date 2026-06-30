@@ -3,9 +3,11 @@
 }
 
 .path-mod-lesson.lesson-skin .lesson-skin-stage {
+    background: var(--lesson-skin-background, transparent);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    font-family: var(--lesson-skin-font-family, inherit);
 }
 
 .path-mod-lesson.lesson-skin .lesson-skin-region-globalnavigation .tertiary-navigation {
@@ -30,9 +32,16 @@
 }
 
 .path-mod-lesson.lesson-skin .lesson-skin-region-main {
+    background: var(--lesson-skin-content-background, transparent);
     grid-area: main;
 }
 
 .path-mod-lesson.lesson-skin .lesson-skin-region-progress {
     grid-area: progress;
+}
+
+.path-mod-lesson.lesson-skin .answeroption,
+.path-mod-lesson.lesson-skin .answeroptiongroup .form-check {
+    background: var(--lesson-skin-answer-background, inherit);
+    border-color: var(--lesson-skin-accent, currentColor);
 }

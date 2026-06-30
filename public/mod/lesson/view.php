@@ -59,9 +59,6 @@ $skin = lesson_get_skin($lesson->skin ?? 'standard');
 $PAGE->add_body_class('lesson-skin');
 $PAGE->add_body_class('lesson-skin-' . $skin);
 $PAGE->requires->css(new moodle_url('/mod/lesson/styles.css'));
-if ($skinstylesheet = lesson_get_skin_stylesheet($skin)) {
-    $PAGE->requires->css($skinstylesheet);
-}
 
 $context = $lesson->context;
 $canmanage = $lesson->can_manage();

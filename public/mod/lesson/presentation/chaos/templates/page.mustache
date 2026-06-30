@@ -1,13 +1,13 @@
 <div class="lesson-skin-stage lesson-skin-stage-chaos">
     <div class="lesson-chaos-topbar">
         {{#hasprogress}}
-            <span class="lesson-chaos-progress-label">{{#str}}progressbar, lesson{{/str}}</span>
+            <span class="lesson-chaos-progress-label">Progress</span>
             <div class="lesson-chaos-progress">
                 {{{progress}}}
             </div>
         {{/hasprogress}}
         {{^hasprogress}}
-            <span class="lesson-chaos-progress-label">{{#str}}pluginname, lessonpresentation_chaos{{/str}}</span>
+            <span class="lesson-chaos-progress-label">Chaos</span>
         {{/hasprogress}}
         {{#hasglobalnavigation}}
             <div class="lesson-skin-region lesson-skin-region-globalnavigation">
@@ -30,7 +30,7 @@
             </svg>
         </div>
         <div class="lesson-chaos-speech">
-            <span class="lesson-chaos-tag">{{#str}}pluginname, lessonpresentation_chaos{{/str}}</span>
+            <span class="lesson-chaos-tag">Chaos</span>
             {{{maincontentanchor}}}
             {{#hasattemptheading}}
                 <div class="lesson-skin-region lesson-skin-region-attemptheading">

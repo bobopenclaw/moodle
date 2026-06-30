@@ -1,8 +1,0 @@
-{
-    "subplugintypes": {
-        "lessonpresentation": "presentation"
-    },
-    "plugintypes": {
-        "lessonpresentation": "mod/lesson/presentation"
-    }
-}

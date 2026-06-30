@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/lesson/db" VERSION="20251126" COMMENT="XMLDB file for Moodle mod/lesson"
+<XMLDB PATH="mod/lesson/db" VERSION="20260630" COMMENT="XMLDB file for Moodle mod/lesson"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -199,6 +199,32 @@
         <KEY NAME="groupid" TYPE="foreign" FIELDS="groupid" REFTABLE="groups" REFFIELDS="id"/>
         <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
+    </TABLE>
+    <TABLE NAME="lesson_skins" COMMENT="Site managed Lesson presentation skins">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="template" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="customcss" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="fontfamily" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="backgroundcolor" TYPE="char" LENGTH="7" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="contentbackgroundcolor" TYPE="char" LENGTH="7" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="accentcolor" TYPE="char" LENGTH="7" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="answerbackgroundcolor" TYPE="char" LENGTH="7" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="enabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="name" UNIQUE="true" FIELDS="name"/>
+        <INDEX NAME="enabled" UNIQUE="false" FIELDS="enabled"/>
+      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>

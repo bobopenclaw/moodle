@@ -24,6 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+$ADMIN->add('modlessonfolder', new admin_externalpage(
+    'modlessonskins',
+    get_string('managelessonskins', 'lesson'),
+    new moodle_url('/mod/lesson/skin.php')
+));
+
 if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/mod/lesson/locallib.php');
     $yesno = array(0 => get_string('no'), 1 => get_string('yes'));

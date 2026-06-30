@@ -48,7 +48,7 @@
  * @return bool
  */
 function xmldb_lesson_upgrade($oldversion) {
-    global $DB;
+    global $DB, $CFG;
     $dbman = $DB->get_manager();
 
     // Automatically generated Moodle v4.4.0 release upgrade line.
@@ -115,8 +115,48 @@ function xmldb_lesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2026042002) {
-        // Lesson savepoint reached for the lessonpresentation subplugin prototype.
+        // Lesson savepoint reached for the previous file-backed skin prototype.
         upgrade_mod_savepoint(true, 2026042002, 'lesson');
+    }
+
+    if ($oldversion < 2026042003) {
+        // Define table lesson_skins to be created.
+        $table = new xmldb_table('lesson_skins');
+
+        // Adding fields to table lesson_skins.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('name', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('title', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('template', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('customcss', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('fontfamily', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+        $table->add_field('backgroundcolor', XMLDB_TYPE_CHAR, '7', null, null, null, null);
+        $table->add_field('contentbackgroundcolor', XMLDB_TYPE_CHAR, '7', null, null, null, null);
+        $table->add_field('accentcolor', XMLDB_TYPE_CHAR, '7', null, null, null, null);
+        $table->add_field('answerbackgroundcolor', XMLDB_TYPE_CHAR, '7', null, null, null, null);
+        $table->add_field('enabled', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1');
+        $table->add_field('sortorder', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table lesson_skins.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+        // Adding indexes to table lesson_skins.
+        $table->add_index('name', XMLDB_INDEX_UNIQUE, ['name']);
+        $table->add_index('enabled', XMLDB_INDEX_NOTUNIQUE, ['enabled']);
+
+        // Conditionally launch create table for lesson_skins.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        require_once($CFG->dirroot . '/mod/lesson/locallib.php');
+        lesson_seed_default_skins();
+
+        // Lesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026042003, 'lesson');
     }
 
     return true;
