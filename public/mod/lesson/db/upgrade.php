@@ -114,5 +114,10 @@ function xmldb_lesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026042001, 'lesson');
     }
 
+    if ($oldversion < 2026042002) {
+        // Lesson savepoint reached for the lessonpresentation subplugin prototype.
+        upgrade_mod_savepoint(true, 2026042002, 'lesson');
+    }
+
     return true;
 }

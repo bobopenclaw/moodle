@@ -84,44 +84,6 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('mod_lesson/slideshowbgcolor', get_string('slideshowbgcolor', 'lesson'),
             get_string('configslideshowbgcolor', 'lesson'), '#FFFFFF', PARAM_TEXT));
 
-    $settings->add(new admin_setting_heading('mod_lesson/skinsettings',
-        get_string('skinsettings', 'lesson'), get_string('skinsettings_desc', 'lesson')));
-
-    foreach (lesson_get_available_skins() as $skin => $skinname) {
-        $settings->add(new admin_setting_heading('mod_lesson/skinsettings_' . $skin,
-            get_string('skinsettingstemplate', 'lesson', $skinname), ''));
-
-        $settings->add(new admin_setting_configstoredfile(
-            'mod_lesson/' . lesson_get_skin_background_filearea($skin),
-            get_string('skinbackgroundimage', 'lesson'),
-            get_string('skinbackgroundimage_desc', 'lesson'),
-            lesson_get_skin_background_filearea($skin),
-            0,
-            ['accepted_types' => ['web_image'], 'maxfiles' => 1],
-        ));
-
-        $settings->add(new admin_setting_configcolourpicker(
-            'mod_lesson/skin_' . $skin . '_backgroundcolour',
-            get_string('skinbackgroundcolour', 'lesson'),
-            get_string('skinbackgroundcolour_desc', 'lesson'),
-            '',
-        ));
-
-        $settings->add(new admin_setting_configcolourpicker(
-            'mod_lesson/skin_' . $skin . '_accentcolour',
-            get_string('skinaccentcolour', 'lesson'),
-            get_string('skinaccentcolour_desc', 'lesson'),
-            '',
-        ));
-
-        $settings->add(new admin_setting_configcolourpicker(
-            'mod_lesson/skin_' . $skin . '_answerbackgroundcolour',
-            get_string('skinanswerbackgroundcolour', 'lesson'),
-            get_string('skinanswerbackgroundcolour_desc', 'lesson'),
-            '',
-        ));
-    }
-
     $numbers = array();
     for ($i = 20; $i > 1; $i--) {
         $numbers[$i] = $i;

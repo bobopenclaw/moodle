@@ -77,12 +77,13 @@ define("LESSON_OTHER_ANSWERS", "@#wronganswer#@");
  * @return array
  */
 function lesson_get_available_skins(): array {
-    return [
-        'standard' => get_string('skin_standard', 'lesson'),
-        'cards' => get_string('skin_cards', 'lesson'),
-        'roman' => get_string('skin_roman', 'lesson'),
-        'ocean' => get_string('skin_ocean', 'lesson'),
-    ];
+    $skins = [];
+    foreach (core_component::get_plugin_list('lessonpresentation') as $name => $path) {
+        $component = 'lessonpresentation_' . $name;
+        $skins[$name] = get_string('pluginname', $component);
+    }
+
+    return $skins ?: ['standard' => get_string('skin_standard', 'lesson')];
 }
 
 /**
@@ -97,79 +98,44 @@ function lesson_get_skin(?string $skin): string {
 }
 
 /**
- * Returns the file area used for a skin background image.
+ * Returns the component name for a lesson skin.
  *
  * @param string $skin
  * @return string
  */
-function lesson_get_skin_background_filearea(string $skin): string {
-    return 'skin_' . lesson_get_skin($skin) . '_backgroundimage';
+function lesson_get_skin_component(string $skin): string {
+    return 'lessonpresentation_' . lesson_get_skin($skin);
 }
 
 /**
- * Returns the URL for the admin-configured skin background image, if present.
+ * Returns the Mustache template used to render a lesson skin.
+ *
+ * @param string $skin
+ * @return string
+ */
+function lesson_get_skin_template(string $skin): string {
+    $component = lesson_get_skin_component($skin);
+    if (core_component::get_component_directory($component)) {
+        return $component . '/page';
+    }
+
+    return 'mod_lesson/skin_page';
+}
+
+/**
+ * Returns the stylesheet URL for a lesson skin, if present.
  *
  * @param string $skin
  * @return moodle_url|null
  */
-function lesson_get_skin_background_image_url(string $skin): ?moodle_url {
+function lesson_get_skin_stylesheet(string $skin): ?moodle_url {
     $skin = lesson_get_skin($skin);
-    $filearea = lesson_get_skin_background_filearea($skin);
-    $filename = get_config('mod_lesson', $filearea);
-
-    if (empty($filename)) {
-        return null;
+    $path = core_component::get_plugin_directory('lessonpresentation', $skin);
+    if ($path && file_exists($path . '/styles.css')) {
+        return new moodle_url('/mod/lesson/presentation/' . $skin . '/styles.css');
     }
 
-    $filepath = dirname($filename);
-    $filename = basename($filename);
-
-    if ($filepath === '.') {
-        $filepath = '/';
-    } else {
-        $filepath = '/' . trim($filepath, '/') . '/';
-    }
-
-    return moodle_url::make_pluginfile_url(
-        context_system::instance()->id,
-        'mod_lesson',
-        $filearea,
-        0,
-        $filepath,
-        $filename,
-    );
-}
-
-/**
- * Returns inline CSS custom properties for a lesson skin.
- *
- * @param string $skin
- * @return string
- */
-function lesson_get_skin_style(string $skin): string {
-    $skin = lesson_get_skin($skin);
-    $properties = [];
-
-    $backgroundcolour = get_config('mod_lesson', 'skin_' . $skin . '_backgroundcolour');
-    if (is_string($backgroundcolour) && preg_match('/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/', $backgroundcolour)) {
-        $properties[] = '--lesson-skin-background-colour: ' . $backgroundcolour;
-    }
-
-    $accentcolour = get_config('mod_lesson', 'skin_' . $skin . '_accentcolour');
-    if (is_string($accentcolour) && preg_match('/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/', $accentcolour)) {
-        $properties[] = '--lesson-skin-accent-colour: ' . $accentcolour;
-    }
-
-    $answerbackgroundcolour = get_config('mod_lesson', 'skin_' . $skin . '_answerbackgroundcolour');
-    if (is_string($answerbackgroundcolour) && preg_match('/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/', $answerbackgroundcolour)) {
-        $properties[] = '--lesson-skin-answer-background-colour: ' . $answerbackgroundcolour;
-    }
-
-    if ($backgroundimage = lesson_get_skin_background_image_url($skin)) {
-        $properties[] = '--lesson-skin-background-image: url("' . s($backgroundimage->out(false)) . '")';
-    }
-
-    return implode('; ', $properties);
+    return null;
 }
 
 /**

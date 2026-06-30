@@ -3,8 +3,6 @@
 }
 
 .path-mod-lesson.lesson-skin .lesson-skin-stage {
-    background-color: var(--lesson-skin-background-colour);
-    background-image: var(--lesson-skin-background-image);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -17,36 +15,6 @@
 
 .path-mod-lesson.lesson-skin .lesson-skin-region-progress {
     margin-top: 1rem;
-}
-
-.path-mod-lesson.lesson-skin-cards .lesson-skin-stage,
-.path-mod-lesson.lesson-skin-roman .lesson-skin-stage,
-.path-mod-lesson.lesson-skin-ocean .lesson-skin-stage {
-    border-radius: .75rem;
-    padding: 1.25rem;
-}
-
-.path-mod-lesson.lesson-skin-cards .lesson-skin-stage {
-    display: grid;
-    gap: 1rem;
-    grid-template-areas:
-        "nav"
-        "attempt"
-        "score"
-        "main"
-        "progress";
-}
-
-.path-mod-lesson.lesson-skin-roman .lesson-skin-stage,
-.path-mod-lesson.lesson-skin-ocean .lesson-skin-stage {
-    display: grid;
-    gap: 1rem;
-    grid-template-areas:
-        "nav progress"
-        "attempt attempt"
-        "score score"
-        "main main";
-    grid-template-columns: minmax(0, 1fr) minmax(14rem, 18rem);
 }
 
 .path-mod-lesson.lesson-skin .lesson-skin-region-globalnavigation {
@@ -67,86 +35,4 @@
 
 .path-mod-lesson.lesson-skin .lesson-skin-region-progress {
     grid-area: progress;
-}
-
-@media (max-width: 767.98px) {
-    .path-mod-lesson.lesson-skin-roman .lesson-skin-stage,
-    .path-mod-lesson.lesson-skin-ocean .lesson-skin-stage {
-        grid-template-areas:
-            "nav"
-            "attempt"
-            "score"
-            "main"
-            "progress";
-        grid-template-columns: 1fr;
-    }
-}
-
-.path-mod-lesson.lesson-skin-cards .answeroption,
-.path-mod-lesson.lesson-skin-cards .answeroptiongroup .form-check,
-.path-mod-lesson.lesson-skin-roman .answeroption,
-.path-mod-lesson.lesson-skin-roman .answeroptiongroup .form-check,
-.path-mod-lesson.lesson-skin-ocean .answeroption,
-.path-mod-lesson.lesson-skin-ocean .answeroptiongroup .form-check {
-    align-items: center;
-    border: 1px solid rgba(0, 0, 0, .12);
-    border-radius: .75rem;
-    display: flex;
-    margin: .75rem 0;
-    min-height: 4rem;
-    padding: 1rem 1.25rem;
-}
-
-.path-mod-lesson.lesson-skin-cards .answeroption:hover,
-.path-mod-lesson.lesson-skin-cards .answeroptiongroup .form-check:hover,
-.path-mod-lesson.lesson-skin-roman .answeroption:hover,
-.path-mod-lesson.lesson-skin-roman .answeroptiongroup .form-check:hover,
-.path-mod-lesson.lesson-skin-ocean .answeroption:hover,
-.path-mod-lesson.lesson-skin-ocean .answeroptiongroup .form-check:hover {
-    border-color: currentcolor;
-}
-
-.path-mod-lesson.lesson-skin-cards .answeroption input,
-.path-mod-lesson.lesson-skin-cards .answeroptiongroup input,
-.path-mod-lesson.lesson-skin-roman .answeroption input,
-.path-mod-lesson.lesson-skin-roman .answeroptiongroup input,
-.path-mod-lesson.lesson-skin-ocean .answeroption input,
-.path-mod-lesson.lesson-skin-ocean .answeroptiongroup input {
-    margin-right: .75rem;
-}
-
-.path-mod-lesson.lesson-skin-cards .answeroption,
-.path-mod-lesson.lesson-skin-cards .answeroptiongroup .form-check {
-    background: var(--lesson-skin-answer-background-colour, #fff);
-    box-shadow: 0 .25rem 1rem rgba(0, 0, 0, .08);
-}
-
-.path-mod-lesson.lesson-skin-roman .lesson-skin-stage {
-    background-color: var(--lesson-skin-background-colour, #fff8ec);
-    border: 1px solid #d7b98d;
-    box-shadow: inset 0 .4rem 0 var(--lesson-skin-accent-colour, #9f5f2a);
-}
-
-.path-mod-lesson.lesson-skin-roman .contents {
-    color: #3b2a1c;
-    font-family: Georgia, "Times New Roman", serif;
-}
-
-.path-mod-lesson.lesson-skin-roman .answeroption,
-.path-mod-lesson.lesson-skin-roman .answeroptiongroup .form-check {
-    background: var(--lesson-skin-answer-background-colour, #fffaf1);
-    border-color: var(--lesson-skin-accent-colour, #b98548);
-    color: #3b2a1c;
-}
-
-.path-mod-lesson.lesson-skin-ocean .lesson-skin-stage {
-    background-color: var(--lesson-skin-background-colour, #effcff);
-    border: 1px solid #a7d8e8;
-}
-
-.path-mod-lesson.lesson-skin-ocean .answeroption,
-.path-mod-lesson.lesson-skin-ocean .answeroptiongroup .form-check {
-    background: var(--lesson-skin-answer-background-colour, #f7fdff);
-    border-color: var(--lesson-skin-accent-colour, #65b8cc);
-    color: #123947;
 }

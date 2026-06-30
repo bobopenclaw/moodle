@@ -215,7 +215,6 @@ class mod_lesson_renderer extends plugin_renderer_base {
 
         $context = [
             'skin' => $skin,
-            'style' => lesson_get_skin_style($skin),
             'globalnavigation' => $regions['globalnavigation'] ?? '',
             'attemptheading' => $regions['attemptheading'] ?? '',
             'score' => $regions['score'] ?? '',
@@ -228,7 +227,7 @@ class mod_lesson_renderer extends plugin_renderer_base {
             'hasprogress' => !empty($regions['progress']),
         ];
 
-        return $this->render_from_template('mod_lesson/skin_page', $context);
+        return $this->render_from_template(lesson_get_skin_template($skin), $context);
     }
 
     /**
