@@ -24,11 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$ADMIN->add('modsettings', new admin_externalpage(
-    'modlessonskins',
-    get_string('managelessonskins', 'lesson'),
-    new moodle_url('/mod/lesson/skin.php')
+$ADMIN->add('modsettings', new admin_category(
+    'modlessonfolder',
+    new lang_string('pluginname', 'mod_lesson'),
+    $module->is_enabled() === false
 ));
+$settings->visiblename = get_string('settings');
 
 if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/mod/lesson/locallib.php');
@@ -185,3 +186,11 @@ if ($ADMIN->fulltree) {
         array('value' => 0, 'adv' => true), $pages));
 
 }
+
+$ADMIN->add('modlessonfolder', $settings);
+$ADMIN->add('modlessonfolder', new admin_externalpage(
+    'modlessonskins',
+    get_string('managelessonskins', 'lesson'),
+    new moodle_url('/mod/lesson/skin.php')
+));
+$settings = null;
