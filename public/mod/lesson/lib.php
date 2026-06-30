@@ -1093,6 +1093,18 @@ function lesson_get_import_export_formats($type) {
 function lesson_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     global $CFG, $DB;
 
+    if ($context->contextlevel == CONTEXT_SYSTEM && preg_match('/^skin_[a-z0-9_-]+_backgroundimage$/', $filearea)) {
+        require_login();
+
+        $fullpath = "/$context->id/mod_lesson/$filearea/0/".implode('/', $args);
+        $fs = get_file_storage();
+        if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
+            return false;
+        }
+
+        send_stored_file($file, DAYSECS, 0, $forcedownload, $options);
+    }
+
     if ($context->contextlevel != CONTEXT_MODULE) {
         return false;
     }

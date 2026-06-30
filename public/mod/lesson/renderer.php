@@ -199,7 +199,17 @@ class mod_lesson_renderer extends plugin_renderer_base {
         echo $page->display($this, $attempt);
         $output = ob_get_contents();
         ob_end_clean();
-        return $output;
+
+        $skin = lesson_get_skin($lesson->skin ?? 'standard');
+        $attributes = [
+            'class' => 'lesson-skin-stage lesson-skin-stage-' . $skin,
+        ];
+
+        if ($style = lesson_get_skin_style($skin)) {
+            $attributes['style'] = $style;
+        }
+
+        return html_writer::div($output, '', $attributes);
     }
 
     /**

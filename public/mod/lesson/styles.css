@@ -2,10 +2,19 @@
     margin-bottom: 1.25rem;
 }
 
-.path-mod-lesson.lesson-skin-cards #region-main,
-.path-mod-lesson.lesson-skin-roman #region-main,
-.path-mod-lesson.lesson-skin-ocean #region-main {
+.path-mod-lesson.lesson-skin .lesson-skin-stage {
+    background-color: var(--lesson-skin-background-colour);
+    background-image: var(--lesson-skin-background-image);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.path-mod-lesson.lesson-skin-cards .lesson-skin-stage,
+.path-mod-lesson.lesson-skin-roman .lesson-skin-stage,
+.path-mod-lesson.lesson-skin-ocean .lesson-skin-stage {
     border-radius: .75rem;
+    padding: 1.25rem;
 }
 
 .path-mod-lesson.lesson-skin-cards .answeroption,
@@ -43,14 +52,14 @@
 
 .path-mod-lesson.lesson-skin-cards .answeroption,
 .path-mod-lesson.lesson-skin-cards .answeroptiongroup .form-check {
-    background: #fff;
+    background: var(--lesson-skin-answer-background-colour, #fff);
     box-shadow: 0 .25rem 1rem rgba(0, 0, 0, .08);
 }
 
-.path-mod-lesson.lesson-skin-roman #region-main {
-    background: #fff8ec;
+.path-mod-lesson.lesson-skin-roman .lesson-skin-stage {
+    background-color: var(--lesson-skin-background-colour, #fff8ec);
     border: 1px solid #d7b98d;
-    box-shadow: inset 0 .4rem 0 #9f5f2a;
+    box-shadow: inset 0 .4rem 0 var(--lesson-skin-accent-colour, #9f5f2a);
 }
 
 .path-mod-lesson.lesson-skin-roman .contents {
@@ -60,19 +69,19 @@
 
 .path-mod-lesson.lesson-skin-roman .answeroption,
 .path-mod-lesson.lesson-skin-roman .answeroptiongroup .form-check {
-    background: linear-gradient(135deg, #fffaf1, #f3dfbd);
-    border-color: #b98548;
+    background: var(--lesson-skin-answer-background-colour, #fffaf1);
+    border-color: var(--lesson-skin-accent-colour, #b98548);
     color: #3b2a1c;
 }
 
-.path-mod-lesson.lesson-skin-ocean #region-main {
-    background: linear-gradient(180deg, #effcff, #f7fbff);
+.path-mod-lesson.lesson-skin-ocean .lesson-skin-stage {
+    background-color: var(--lesson-skin-background-colour, #effcff);
     border: 1px solid #a7d8e8;
 }
 
 .path-mod-lesson.lesson-skin-ocean .answeroption,
 .path-mod-lesson.lesson-skin-ocean .answeroptiongroup .form-check {
-    background: linear-gradient(135deg, #f7fdff, #dff5fb);
-    border-color: #65b8cc;
+    background: var(--lesson-skin-answer-background-colour, #f7fdff);
+    border-color: var(--lesson-skin-accent-colour, #65b8cc);
     color: #123947;
 }

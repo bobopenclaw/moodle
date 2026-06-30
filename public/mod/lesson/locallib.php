@@ -97,6 +97,82 @@ function lesson_get_skin(?string $skin): string {
 }
 
 /**
+ * Returns the file area used for a skin background image.
+ *
+ * @param string $skin
+ * @return string
+ */
+function lesson_get_skin_background_filearea(string $skin): string {
+    return 'skin_' . lesson_get_skin($skin) . '_backgroundimage';
+}
+
+/**
+ * Returns the URL for the admin-configured skin background image, if present.
+ *
+ * @param string $skin
+ * @return moodle_url|null
+ */
+function lesson_get_skin_background_image_url(string $skin): ?moodle_url {
+    $skin = lesson_get_skin($skin);
+    $filearea = lesson_get_skin_background_filearea($skin);
+    $filename = get_config('mod_lesson', $filearea);
+
+    if (empty($filename)) {
+        return null;
+    }
+
+    $filepath = dirname($filename);
+    $filename = basename($filename);
+
+    if ($filepath === '.') {
+        $filepath = '/';
+    } else {
+        $filepath = '/' . trim($filepath, '/') . '/';
+    }
+
+    return moodle_url::make_pluginfile_url(
+        context_system::instance()->id,
+        'mod_lesson',
+        $filearea,
+        0,
+        $filepath,
+        $filename,
+    );
+}
+
+/**
+ * Returns inline CSS custom properties for a lesson skin.
+ *
+ * @param string $skin
+ * @return string
+ */
+function lesson_get_skin_style(string $skin): string {
+    $skin = lesson_get_skin($skin);
+    $properties = [];
+
+    $backgroundcolour = get_config('mod_lesson', 'skin_' . $skin . '_backgroundcolour');
+    if (is_string($backgroundcolour) && preg_match('/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/', $backgroundcolour)) {
+        $properties[] = '--lesson-skin-background-colour: ' . $backgroundcolour;
+    }
+
+    $accentcolour = get_config('mod_lesson', 'skin_' . $skin . '_accentcolour');
+    if (is_string($accentcolour) && preg_match('/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/', $accentcolour)) {
+        $properties[] = '--lesson-skin-accent-colour: ' . $accentcolour;
+    }
+
+    $answerbackgroundcolour = get_config('mod_lesson', 'skin_' . $skin . '_answerbackgroundcolour');
+    if (is_string($answerbackgroundcolour) && preg_match('/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/', $answerbackgroundcolour)) {
+        $properties[] = '--lesson-skin-answer-background-colour: ' . $answerbackgroundcolour;
+    }
+
+    if ($backgroundimage = lesson_get_skin_background_image_url($skin)) {
+        $properties[] = '--lesson-skin-background-image: url("' . s($backgroundimage->out(false)) . '")';
+    }
+
+    return implode('; ', $properties);
+}
+
+/**
  * Checks to see if a LESSON_CLUSTERJUMP or
  * a LESSON_UNSEENBRANCHPAGE is used in a lesson.
  *
