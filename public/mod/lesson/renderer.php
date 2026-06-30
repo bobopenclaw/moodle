@@ -240,7 +240,7 @@ class mod_lesson_renderer extends plugin_renderer_base {
             $output .= html_writer::tag('style', $css, ['data-lesson-skin' => $skinname]);
         }
 
-        $mustache = new mustache_engine(['escape' => 's']);
+        $mustache = new \core\output\mustache_engine(['escape' => 's']);
         $output .= trim($mustache->render($template, $context));
 
         return $output;
