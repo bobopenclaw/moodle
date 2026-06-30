@@ -1,0 +1,78 @@
+.path-mod-lesson.lesson-skin .contents {
+    margin-bottom: 1.25rem;
+}
+
+.path-mod-lesson.lesson-skin-cards #region-main,
+.path-mod-lesson.lesson-skin-roman #region-main,
+.path-mod-lesson.lesson-skin-ocean #region-main {
+    border-radius: .75rem;
+}
+
+.path-mod-lesson.lesson-skin-cards .answeroption,
+.path-mod-lesson.lesson-skin-cards .answeroptiongroup .form-check,
+.path-mod-lesson.lesson-skin-roman .answeroption,
+.path-mod-lesson.lesson-skin-roman .answeroptiongroup .form-check,
+.path-mod-lesson.lesson-skin-ocean .answeroption,
+.path-mod-lesson.lesson-skin-ocean .answeroptiongroup .form-check {
+    align-items: center;
+    border: 1px solid rgba(0, 0, 0, .12);
+    border-radius: .75rem;
+    display: flex;
+    margin: .75rem 0;
+    min-height: 4rem;
+    padding: 1rem 1.25rem;
+}
+
+.path-mod-lesson.lesson-skin-cards .answeroption:hover,
+.path-mod-lesson.lesson-skin-cards .answeroptiongroup .form-check:hover,
+.path-mod-lesson.lesson-skin-roman .answeroption:hover,
+.path-mod-lesson.lesson-skin-roman .answeroptiongroup .form-check:hover,
+.path-mod-lesson.lesson-skin-ocean .answeroption:hover,
+.path-mod-lesson.lesson-skin-ocean .answeroptiongroup .form-check:hover {
+    border-color: currentcolor;
+}
+
+.path-mod-lesson.lesson-skin-cards .answeroption input,
+.path-mod-lesson.lesson-skin-cards .answeroptiongroup input,
+.path-mod-lesson.lesson-skin-roman .answeroption input,
+.path-mod-lesson.lesson-skin-roman .answeroptiongroup input,
+.path-mod-lesson.lesson-skin-ocean .answeroption input,
+.path-mod-lesson.lesson-skin-ocean .answeroptiongroup input {
+    margin-right: .75rem;
+}
+
+.path-mod-lesson.lesson-skin-cards .answeroption,
+.path-mod-lesson.lesson-skin-cards .answeroptiongroup .form-check {
+    background: #fff;
+    box-shadow: 0 .25rem 1rem rgba(0, 0, 0, .08);
+}
+
+.path-mod-lesson.lesson-skin-roman #region-main {
+    background: #fff8ec;
+    border: 1px solid #d7b98d;
+    box-shadow: inset 0 .4rem 0 #9f5f2a;
+}
+
+.path-mod-lesson.lesson-skin-roman .contents {
+    color: #3b2a1c;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.path-mod-lesson.lesson-skin-roman .answeroption,
+.path-mod-lesson.lesson-skin-roman .answeroptiongroup .form-check {
+    background: linear-gradient(135deg, #fffaf1, #f3dfbd);
+    border-color: #b98548;
+    color: #3b2a1c;
+}
+
+.path-mod-lesson.lesson-skin-ocean #region-main {
+    background: linear-gradient(180deg, #effcff, #f7fbff);
+    border: 1px solid #a7d8e8;
+}
+
+.path-mod-lesson.lesson-skin-ocean .answeroption,
+.path-mod-lesson.lesson-skin-ocean .answeroptiongroup .form-check {
+    background: linear-gradient(135deg, #f7fdff, #dff5fb);
+    border-color: #65b8cc;
+    color: #123947;
+}

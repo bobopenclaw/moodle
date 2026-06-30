@@ -55,6 +55,10 @@ if ($pageid !== null) {
 $PAGE->set_url($url);
 $PAGE->force_settings_menu();
 $PAGE->add_body_class('limitedwidth');
+$skin = lesson_get_skin($lesson->skin ?? 'standard');
+$PAGE->add_body_class('lesson-skin');
+$PAGE->add_body_class('lesson-skin-' . $skin);
+$PAGE->requires->css(new moodle_url('/mod/lesson/styles.css'));
 
 $context = $lesson->context;
 $canmanage = $lesson->can_manage();

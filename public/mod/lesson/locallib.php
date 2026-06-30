@@ -69,6 +69,34 @@ define("LESSON_OTHER_ANSWERS", "@#wronganswer#@");
 /// starts with lesson_
 
 /**
+ * Returns the available lesson skins.
+ *
+ * This is intentionally small for the prototype. A future implementation can
+ * replace this list with discovery from lesson presentation subplugins.
+ *
+ * @return array
+ */
+function lesson_get_available_skins(): array {
+    return [
+        'standard' => get_string('skin_standard', 'lesson'),
+        'cards' => get_string('skin_cards', 'lesson'),
+        'roman' => get_string('skin_roman', 'lesson'),
+        'ocean' => get_string('skin_ocean', 'lesson'),
+    ];
+}
+
+/**
+ * Returns a valid lesson skin key.
+ *
+ * @param string|null $skin
+ * @return string
+ */
+function lesson_get_skin(?string $skin): string {
+    $skin = clean_param($skin ?? 'standard', PARAM_ALPHANUMEXT);
+    return array_key_exists($skin, lesson_get_available_skins()) ? $skin : 'standard';
+}
+
+/**
  * Checks to see if a LESSON_CLUSTERJUMP or
  * a LESSON_UNSEENBRANCHPAGE is used in a lesson.
  *

@@ -129,6 +129,10 @@ class mod_lesson_mod_form extends moodleform_mod {
         $mform->setDefault('slideshow', $lessonconfig->slideshow);
         $mform->setAdvanced('slideshow', $lessonconfig->slideshow_adv);
 
+        $mform->addElement('select', 'skin', get_string('skin', 'lesson'), lesson_get_available_skins());
+        $mform->addHelpButton('skin', 'skin', 'lesson');
+        $mform->setDefault('skin', 'standard');
+
         $numbers = array();
         for ($i = 20; $i > 1; $i--) {
             $numbers[$i] = $i;

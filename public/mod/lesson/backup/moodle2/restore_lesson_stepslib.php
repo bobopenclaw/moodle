@@ -83,6 +83,9 @@ class restore_lesson_activity_structure_step extends restore_activity_structure_
         if (!isset($data->completiontimespent)) {
             $data->completiontimespent = 0;
         }
+        if (!isset($data->skin)) {
+            $data->skin = 'standard';
+        }
 
         if (!isset($data->intro)) {
             $data->intro = '';

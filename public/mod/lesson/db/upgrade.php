@@ -100,5 +100,19 @@ function xmldb_lesson_upgrade($oldversion) {
     // Automatically generated Moodle v5.2.0 release upgrade line.
     // Put any upgrade step following this.
 
+    if ($oldversion < 2026042001) {
+        // Define field skin to be added to lesson.
+        $table = new xmldb_table('lesson');
+        $field = new xmldb_field('skin', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, 'standard', 'bgcolor');
+
+        // Conditionally launch add field skin.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Lesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026042001, 'lesson');
+    }
+
     return true;
 }
