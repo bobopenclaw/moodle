@@ -20,6 +20,8 @@ class skin_form extends \moodleform {
      * Form definition.
      */
     protected function definition() {
+        global $PAGE;
+
         $mform = $this->_form;
         $skin = $this->_customdata['skin'] ?? null;
         $isedit = !empty($skin->id);
@@ -62,9 +64,35 @@ class skin_form extends \moodleform {
             'answerbackgroundcolor' => get_string('skinanswerbackgroundcolor', 'lesson'),
         ];
         foreach ($colourfields as $field => $label) {
-            $mform->addElement('text', $field, $label, ['size' => 8]);
+            $mform->addElement('text', $field, $label, [
+                'size' => 8,
+                'maxlength' => 7,
+                'placeholder' => '#ffffff',
+                'class' => 'lesson-skin-colour-field',
+            ]);
             $mform->setType($field, PARAM_TEXT);
         }
+
+        $PAGE->requires->js_init_code("
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('input.lesson-skin-colour-field').forEach(function(field) {
+                    var picker = document.createElement('input');
+                    picker.type = 'color';
+                    picker.className = 'ml-2 lesson-skin-colour-picker';
+                    picker.value = /^#[0-9a-fA-F]{6}$/.test(field.value) ? field.value : '#ffffff';
+                    picker.setAttribute('aria-label', field.getAttribute('aria-label') || field.name);
+                    field.insertAdjacentElement('afterend', picker);
+                    picker.addEventListener('input', function() {
+                        field.value = picker.value;
+                    });
+                    field.addEventListener('input', function() {
+                        if (/^#[0-9a-fA-F]{6}$/.test(field.value)) {
+                            picker.value = field.value;
+                        }
+                    });
+                });
+            });
+        ");
 
         $mform->addElement('header', 'skinlayouthdr', get_string('skinlayout', 'lesson'));
 

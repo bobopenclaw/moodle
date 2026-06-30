@@ -1,4 +1,5 @@
 .path-mod-lesson.lesson-skin .contents {
+    background: transparent !important;
     margin-bottom: 1.25rem;
 }
 
@@ -32,8 +33,16 @@
 }
 
 .path-mod-lesson.lesson-skin .lesson-skin-region-main {
-    background: var(--lesson-skin-content-background, transparent);
+    background: transparent;
     grid-area: main;
+}
+
+.path-mod-lesson.lesson-skin .lesson-skin-region-main .box,
+.path-mod-lesson.lesson-skin .lesson-skin-region-main .card,
+.path-mod-lesson.lesson-skin .lesson-skin-region-main .contents,
+.path-mod-lesson.lesson-skin .lesson-skin-region-main .generalbox,
+.path-mod-lesson.lesson-skin .lesson-skin-region-main .mform {
+    background: transparent !important;
 }
 
 .path-mod-lesson.lesson-skin .lesson-skin-region-progress {
