@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$ADMIN->add('modlessonfolder', new admin_externalpage(
+$ADMIN->add('modsettings', new admin_externalpage(
     'modlessonskins',
     get_string('managelessonskins', 'lesson'),
     new moodle_url('/mod/lesson/skin.php')
