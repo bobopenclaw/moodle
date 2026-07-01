@@ -49,18 +49,24 @@ function lesson_add_instance($data, $mform) {
     $draftitemid = $data->mediafile;
     $haslessonimage = property_exists($data, 'lessonimage');
     $imagedraftitemid = $data->lessonimage ?? null;
+    $haslessonbackgroundimage = property_exists($data, 'lessonbackgroundimage');
+    $backgroundimagedraftitemid = $data->lessonbackgroundimage ?? null;
     $context = context_module::instance($cmid);
 
     lesson_process_pre_save($data);
 
     unset($data->mediafile);
     unset($data->lessonimage);
+    unset($data->lessonbackgroundimage);
     $lessonid = $DB->insert_record("lesson", $data);
     $data->id = $lessonid;
 
     lesson_update_media_file($lessonid, $context, $draftitemid);
     if ($haslessonimage) {
         lesson_update_image_file($context, $imagedraftitemid);
+    }
+    if ($haslessonbackgroundimage) {
+        lesson_update_background_image_file($context, $backgroundimagedraftitemid);
     }
 
     lesson_process_post_save($data);
@@ -87,17 +93,23 @@ function lesson_update_instance($data, $mform) {
     $draftitemid = $data->mediafile;
     $haslessonimage = property_exists($data, 'lessonimage');
     $imagedraftitemid = $data->lessonimage ?? null;
+    $haslessonbackgroundimage = property_exists($data, 'lessonbackgroundimage');
+    $backgroundimagedraftitemid = $data->lessonbackgroundimage ?? null;
     $context = context_module::instance($cmid);
 
     lesson_process_pre_save($data);
 
     unset($data->mediafile);
     unset($data->lessonimage);
+    unset($data->lessonbackgroundimage);
     $DB->update_record("lesson", $data);
 
     lesson_update_media_file($data->id, $context, $draftitemid);
     if ($haslessonimage) {
         lesson_update_image_file($context, $imagedraftitemid);
+    }
+    if ($haslessonbackgroundimage) {
+        lesson_update_background_image_file($context, $backgroundimagedraftitemid);
     }
 
     lesson_process_post_save($data);
@@ -1149,7 +1161,7 @@ function lesson_pluginfile($course, $cm, $context, $filearea, $args, $forcedownl
         }
         $fullpath = "/$context->id/mod_lesson/$filearea/0/".implode('/', $args);
 
-    } else if ($filearea === 'lessonimage') {
+    } else if ($filearea === 'lessonimage' || $filearea === 'lessonbackgroundimage') {
         if (count($args) > 1) {
             array_shift($args);
         }
@@ -1180,6 +1192,7 @@ function lesson_get_file_areas() {
     $areas['page_contents'] = get_string('pagecontents', 'mod_lesson');
     $areas['mediafile'] = get_string('mediafile', 'mod_lesson');
     $areas['lessonimage'] = get_string('lessonimage', 'mod_lesson');
+    $areas['lessonbackgroundimage'] = get_string('lessonbackgroundimage', 'mod_lesson');
     $areas['page_answers'] = get_string('pageanswers', 'mod_lesson');
     $areas['page_responses'] = get_string('pageresponses', 'mod_lesson');
     $areas['essay_responses'] = get_string('essayresponses', 'mod_lesson');
@@ -1214,7 +1227,7 @@ function lesson_get_file_info($browser, $areas, $course, $cm, $context, $fileare
 
     // Mediafile and lesson image areas do not have sub directories, so let's select the default itemid to prevent
     // the user from selecting a directory to access their content.
-    if (($filearea == 'mediafile' || $filearea == 'lessonimage') && is_null($itemid)) {
+    if (($filearea == 'mediafile' || $filearea == 'lessonimage' || $filearea == 'lessonbackgroundimage') && is_null($itemid)) {
         $itemid = 0;
     }
 
@@ -1298,6 +1311,21 @@ function lesson_update_media_file($lessonid, $context, $draftitemid) {
  */
 function lesson_update_image_file($context, $draftitemid) {
     file_save_draft_area_files($draftitemid, $context->id, 'mod_lesson', 'lessonimage', 0, [
+        'accepted_types' => ['web_image'],
+        'subdirs' => 0,
+        'maxfiles' => 1,
+    ]);
+}
+
+/**
+ * Saves the uploaded Lesson background image.
+ *
+ * @param context_module $context module context
+ * @param int $draftitemid draft item id
+ * @return void
+ */
+function lesson_update_background_image_file($context, $draftitemid) {
+    file_save_draft_area_files($draftitemid, $context->id, 'mod_lesson', 'lessonbackgroundimage', 0, [
         'accepted_types' => ['web_image'],
         'subdirs' => 0,
         'maxfiles' => 1,

@@ -248,9 +248,10 @@ function lesson_get_skin(?string $skin): string {
  * Builds the CSS emitted for a Lesson skin.
  *
  * @param stdClass $skin
+ * @param moodle_url|null $backgroundimageurl background image URL
  * @return string
  */
-function lesson_get_skin_css(stdClass $skin): string {
+function lesson_get_skin_css(stdClass $skin, ?moodle_url $backgroundimageurl = null): string {
     $name = clean_param($skin->name ?? 'standard', PARAM_ALPHANUMEXT);
     $properties = [
         '--lesson-skin-background' => $skin->backgroundcolor ?? '',
@@ -259,6 +260,10 @@ function lesson_get_skin_css(stdClass $skin): string {
         '--lesson-skin-answer-background' => $skin->answerbackgroundcolor ?? '',
         '--lesson-skin-font-family' => $skin->fontfamily ?? '',
     ];
+    if ($backgroundimageurl) {
+        $backgroundurl = str_replace(['\\', '"'], ['\\\\', '\"'], $backgroundimageurl->out(false));
+        $properties['--lesson-skin-background-image'] = 'url("' . $backgroundurl . '")';
+    }
 
     $declarations = [];
     foreach ($properties as $property => $value) {
@@ -275,6 +280,15 @@ function lesson_get_skin_css(stdClass $skin): string {
     }
 
     $css .= $skin->customcss ?? '';
+    if ($backgroundimageurl) {
+        $css .= "\n\n";
+        $css .= '.path-mod-lesson.lesson-skin-' . $name . ' .lesson-skin-stage {' . "\n";
+        $css .= "    background-image: var(--lesson-skin-background-image);\n";
+        $css .= "    background-position: center;\n";
+        $css .= "    background-repeat: no-repeat;\n";
+        $css .= "    background-size: cover;\n";
+        $css .= "}\n";
+    }
 
     return $css;
 }
@@ -285,9 +299,9 @@ function lesson_get_skin_css(stdClass $skin): string {
  * @param context_module $context module context
  * @return stored_file|null
  */
-function lesson_get_image_file(context_module $context): ?stored_file {
+function lesson_get_image_file(context_module $context, string $filearea = 'lessonimage'): ?stored_file {
     $fs = get_file_storage();
-    $files = $fs->get_area_files($context->id, 'mod_lesson', 'lessonimage', 0, 'itemid, filepath, filename', false);
+    $files = $fs->get_area_files($context->id, 'mod_lesson', $filearea, 0, 'itemid, filepath, filename', false);
     if (!$files) {
         return null;
     }
@@ -302,15 +316,15 @@ function lesson_get_image_file(context_module $context): ?stored_file {
  * @param context_module $context module context
  * @return moodle_url|null
  */
-function lesson_get_image_url(object $lesson, context_module $context): ?moodle_url {
-    if (!$file = lesson_get_image_file($context)) {
+function lesson_get_image_url(object $lesson, context_module $context, string $filearea = 'lessonimage'): ?moodle_url {
+    if (!$file = lesson_get_image_file($context, $filearea)) {
         return null;
     }
 
     return moodle_url::make_pluginfile_url(
         $context->id,
         'mod_lesson',
-        'lessonimage',
+        $filearea,
         $lesson->timemodified ?? 0,
         '/',
         $file->get_filename(),

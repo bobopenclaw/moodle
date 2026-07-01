@@ -200,6 +200,7 @@ class backup_lesson_activity_structure_step extends backup_activity_structure_st
         $lesson->annotate_files('mod_lesson', 'intro', null);
         $lesson->annotate_files('mod_lesson', 'mediafile', null);
         $lesson->annotate_files('mod_lesson', 'lessonimage', null);
+        $lesson->annotate_files('mod_lesson', 'lessonbackgroundimage', null);
         $page->annotate_files('mod_lesson', 'page_contents', 'id');
         $answer->annotate_files('mod_lesson', 'page_answers', 'id');
         $answer->annotate_files('mod_lesson', 'page_responses', 'id');

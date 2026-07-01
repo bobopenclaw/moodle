@@ -4,7 +4,8 @@
 }
 
 .path-mod-lesson.lesson-skin .lesson-skin-stage {
-    background: var(--lesson-skin-background, transparent);
+    background-color: var(--lesson-skin-background, transparent);
+    background-image: var(--lesson-skin-background-image, none);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

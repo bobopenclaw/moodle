@@ -110,6 +110,15 @@ class mod_lesson_mod_form extends moodleform_mod {
         $mform->addElement('filemanager', 'lessonimage', get_string('lessonimage', 'lesson'), null, $imagefilemanageroptions);
         $mform->addHelpButton('lessonimage', 'lessonimage', 'lesson');
 
+        $mform->addElement(
+            'filemanager',
+            'lessonbackgroundimage',
+            get_string('lessonbackgroundimage', 'lesson'),
+            null,
+            $imagefilemanageroptions,
+        );
+        $mform->addHelpButton('lessonbackgroundimage', 'lessonbackgroundimage', 'lesson');
+
         $mform->addElement('selectyesno', 'progressbar', get_string('progressbar', 'lesson'));
         $mform->addHelpButton('progressbar', 'progressbar', 'lesson');
         $mform->setDefault('progressbar', $lessonconfig->progressbar);
@@ -394,6 +403,15 @@ class mod_lesson_mod_form extends moodleform_mod {
                 'maxfiles' => 1,
             ]);
             $defaultvalues['lessonimage'] = $imagedraftitemid;
+
+            $backgroundimagedraftitemid = file_get_submitted_draft_itemid('lessonbackgroundimage');
+            file_prepare_draft_area($backgroundimagedraftitemid, $this->context->id, 'mod_lesson', 'lessonbackgroundimage', 0, [
+                'accepted_types' => ['web_image'],
+                'subdirs' => 0,
+                'maxbytes' => $this->course->maxbytes,
+                'maxfiles' => 1,
+            ]);
+            $defaultvalues['lessonbackgroundimage'] = $backgroundimagedraftitemid;
         }
     }
 

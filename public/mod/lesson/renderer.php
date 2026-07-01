@@ -214,6 +214,7 @@ class mod_lesson_renderer extends plugin_renderer_base {
         $skin = lesson_get_skin_record($lesson->skin ?? 'standard');
         $skinname = clean_param($skin->name ?? 'standard', PARAM_ALPHANUMEXT);
         $imageurl = lesson_get_image_url($lesson, $lesson->context);
+        $backgroundimageurl = lesson_get_image_url($lesson, $lesson->context, 'lessonbackgroundimage');
 
         $context = [
             'skin' => $skinname,
@@ -228,11 +229,13 @@ class mod_lesson_renderer extends plugin_renderer_base {
             'maincontentanchor' => $regions['maincontentanchor'] ?? '',
             'content' => $regions['content'] ?? '',
             'progress' => $regions['progress'] ?? '',
+            'backgroundimageurl' => $backgroundimageurl ? $backgroundimageurl->out(false) : '',
             'hasglobalnavigation' => !empty($regions['globalnavigation']),
             'hasattemptheading' => !empty($regions['attemptheading']),
             'hasscore' => !empty($regions['score']),
             'hasprogress' => !empty($regions['progress']),
             'hasimage' => $imageurl !== null,
+            'hasbackgroundimage' => $backgroundimageurl !== null,
         ];
 
         $template = trim($skin->template ?? '');
@@ -241,7 +244,7 @@ class mod_lesson_renderer extends plugin_renderer_base {
         }
 
         $output = '';
-        $css = trim(lesson_get_skin_css($skin));
+        $css = trim(lesson_get_skin_css($skin, $backgroundimageurl));
         if ($css !== '') {
             $output .= html_writer::tag('style', $css, ['data-lesson-skin' => $skinname]);
         }
