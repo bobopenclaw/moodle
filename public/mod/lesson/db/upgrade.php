@@ -159,5 +159,24 @@ function xmldb_lesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026042003, 'lesson');
     }
 
+    if ($oldversion < 2026042004) {
+        require_once($CFG->dirroot . '/mod/lesson/locallib.php');
+        $defaults = lesson_get_default_skin_definitions();
+        foreach (['ocean', 'roman'] as $skinname) {
+            if (!isset($defaults[$skinname])) {
+                continue;
+            }
+            if ($record = $DB->get_record('lesson_skins', ['name' => $skinname])) {
+                $record->template = $defaults[$skinname]['template'];
+                $record->customcss = $defaults[$skinname]['customcss'];
+                $record->timemodified = time();
+                $DB->update_record('lesson_skins', $record);
+            }
+        }
+
+        // Lesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026042004, 'lesson');
+    }
+
     return true;
 }

@@ -47,15 +47,21 @@ function lesson_add_instance($data, $mform) {
 
     $cmid = $data->coursemodule;
     $draftitemid = $data->mediafile;
+    $haslessonimage = property_exists($data, 'lessonimage');
+    $imagedraftitemid = $data->lessonimage ?? null;
     $context = context_module::instance($cmid);
 
     lesson_process_pre_save($data);
 
     unset($data->mediafile);
+    unset($data->lessonimage);
     $lessonid = $DB->insert_record("lesson", $data);
     $data->id = $lessonid;
 
     lesson_update_media_file($lessonid, $context, $draftitemid);
+    if ($haslessonimage) {
+        lesson_update_image_file($context, $imagedraftitemid);
+    }
 
     lesson_process_post_save($data);
 
@@ -79,14 +85,20 @@ function lesson_update_instance($data, $mform) {
     $data->id = $data->instance;
     $cmid = $data->coursemodule;
     $draftitemid = $data->mediafile;
+    $haslessonimage = property_exists($data, 'lessonimage');
+    $imagedraftitemid = $data->lessonimage ?? null;
     $context = context_module::instance($cmid);
 
     lesson_process_pre_save($data);
 
     unset($data->mediafile);
+    unset($data->lessonimage);
     $DB->update_record("lesson", $data);
 
     lesson_update_media_file($data->id, $context, $draftitemid);
+    if ($haslessonimage) {
+        lesson_update_image_file($context, $imagedraftitemid);
+    }
 
     lesson_process_post_save($data);
 
@@ -1137,6 +1149,12 @@ function lesson_pluginfile($course, $cm, $context, $filearea, $args, $forcedownl
         }
         $fullpath = "/$context->id/mod_lesson/$filearea/0/".implode('/', $args);
 
+    } else if ($filearea === 'lessonimage') {
+        if (count($args) > 1) {
+            array_shift($args);
+        }
+        $fullpath = "/$context->id/mod_lesson/$filearea/0/".implode('/', $args);
+
     } else {
         return false;
     }
@@ -1161,6 +1179,7 @@ function lesson_get_file_areas() {
     $areas = array();
     $areas['page_contents'] = get_string('pagecontents', 'mod_lesson');
     $areas['mediafile'] = get_string('mediafile', 'mod_lesson');
+    $areas['lessonimage'] = get_string('lessonimage', 'mod_lesson');
     $areas['page_answers'] = get_string('pageanswers', 'mod_lesson');
     $areas['page_responses'] = get_string('pageresponses', 'mod_lesson');
     $areas['essay_responses'] = get_string('essayresponses', 'mod_lesson');
@@ -1193,9 +1212,9 @@ function lesson_get_file_info($browser, $areas, $course, $cm, $context, $fileare
         return null;
     }
 
-    // Mediafile area does not have sub directories, so let's select the default itemid to prevent
-    // the user from selecting a directory to access the mediafile content.
-    if ($filearea == 'mediafile' && is_null($itemid)) {
+    // Mediafile and lesson image areas do not have sub directories, so let's select the default itemid to prevent
+    // the user from selecting a directory to access their content.
+    if (($filearea == 'mediafile' || $filearea == 'lessonimage') && is_null($itemid)) {
         $itemid = 0;
     }
 
@@ -1268,6 +1287,21 @@ function lesson_update_media_file($lessonid, $context, $draftitemid) {
         // Set the mediafile column in the lessons table.
         $DB->set_field('lesson', 'mediafile', '', array('id' => $lessonid));
     }
+}
+
+/**
+ * Saves the uploaded Lesson layout image.
+ *
+ * @param context_module $context module context
+ * @param int $draftitemid draft item id
+ * @return void
+ */
+function lesson_update_image_file($context, $draftitemid) {
+    file_save_draft_area_files($draftitemid, $context->id, 'mod_lesson', 'lessonimage', 0, [
+        'accepted_types' => ['web_image'],
+        'subdirs' => 0,
+        'maxfiles' => 1,
+    ]);
 }
 
 /**

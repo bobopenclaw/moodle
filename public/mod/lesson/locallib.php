@@ -280,6 +280,44 @@ function lesson_get_skin_css(stdClass $skin): string {
 }
 
 /**
+ * Returns the image uploaded for the Lesson layout, if one exists.
+ *
+ * @param context_module $context module context
+ * @return stored_file|null
+ */
+function lesson_get_image_file(context_module $context): ?stored_file {
+    $fs = get_file_storage();
+    $files = $fs->get_area_files($context->id, 'mod_lesson', 'lessonimage', 0, 'itemid, filepath, filename', false);
+    if (!$files) {
+        return null;
+    }
+
+    return reset($files) ?: null;
+}
+
+/**
+ * Returns the public pluginfile URL for the uploaded Lesson layout image.
+ *
+ * @param object $lesson Lesson record
+ * @param context_module $context module context
+ * @return moodle_url|null
+ */
+function lesson_get_image_url(object $lesson, context_module $context): ?moodle_url {
+    if (!$file = lesson_get_image_file($context)) {
+        return null;
+    }
+
+    return moodle_url::make_pluginfile_url(
+        $context->id,
+        'mod_lesson',
+        'lessonimage',
+        $lesson->timemodified ?? 0,
+        '/',
+        $file->get_filename(),
+    );
+}
+
+/**
  * Checks to see if a LESSON_CLUSTERJUMP or
  * a LESSON_UNSEENBRANCHPAGE is used in a lesson.
  *

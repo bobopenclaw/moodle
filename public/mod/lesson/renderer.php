@@ -213,10 +213,15 @@ class mod_lesson_renderer extends plugin_renderer_base {
     public function display_skin_page_layout(lesson $lesson, array $regions): string {
         $skin = lesson_get_skin_record($lesson->skin ?? 'standard');
         $skinname = clean_param($skin->name ?? 'standard', PARAM_ALPHANUMEXT);
+        $imageurl = lesson_get_image_url($lesson, $lesson->context);
 
         $context = [
             'skin' => $skinname,
             'skintitle' => format_string($skin->title ?? ''),
+            'imageurl' => $imageurl ? $imageurl->out(false) : '',
+            'imagealt' => get_string('lessonimagealt', 'lesson', format_string($lesson->name, true, [
+                'context' => $lesson->context,
+            ])),
             'globalnavigation' => $regions['globalnavigation'] ?? '',
             'attemptheading' => $regions['attemptheading'] ?? '',
             'score' => $regions['score'] ?? '',
@@ -227,6 +232,7 @@ class mod_lesson_renderer extends plugin_renderer_base {
             'hasattemptheading' => !empty($regions['attemptheading']),
             'hasscore' => !empty($regions['score']),
             'hasprogress' => !empty($regions['progress']),
+            'hasimage' => $imageurl !== null,
         ];
 
         $template = trim($skin->template ?? '');

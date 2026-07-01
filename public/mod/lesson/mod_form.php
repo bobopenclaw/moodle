@@ -100,6 +100,16 @@ class mod_lesson_mod_form extends moodleform_mod {
         $mform->addHelpButton('mediafile', 'mediafile', 'lesson');
         $mform->setAdvanced('mediafile', $lessonconfig->mediafile_adv);
 
+        $imagefilemanageroptions = [
+            'accepted_types' => ['web_image'],
+            'maxbytes' => $this->course->maxbytes,
+            'subdirs' => 0,
+            'maxfiles' => 1,
+            'return_types' => FILE_INTERNAL,
+        ];
+        $mform->addElement('filemanager', 'lessonimage', get_string('lessonimage', 'lesson'), null, $imagefilemanageroptions);
+        $mform->addHelpButton('lessonimage', 'lessonimage', 'lesson');
+
         $mform->addElement('selectyesno', 'progressbar', get_string('progressbar', 'lesson'));
         $mform->addHelpButton('progressbar', 'progressbar', 'lesson');
         $mform->setDefault('progressbar', $lessonconfig->progressbar);
@@ -375,6 +385,15 @@ class mod_lesson_mod_form extends moodleform_mod {
             $draftitemid = file_get_submitted_draft_itemid('mediafile');
             file_prepare_draft_area($draftitemid, $this->context->id, 'mod_lesson', 'mediafile', 0, array('subdirs'=>0, 'maxbytes' => $this->course->maxbytes, 'maxfiles' => 1));
             $defaultvalues['mediafile'] = $draftitemid;
+
+            $imagedraftitemid = file_get_submitted_draft_itemid('lessonimage');
+            file_prepare_draft_area($imagedraftitemid, $this->context->id, 'mod_lesson', 'lessonimage', 0, [
+                'accepted_types' => ['web_image'],
+                'subdirs' => 0,
+                'maxbytes' => $this->course->maxbytes,
+                'maxfiles' => 1,
+            ]);
+            $defaultvalues['lessonimage'] = $imagedraftitemid;
         }
     }
 

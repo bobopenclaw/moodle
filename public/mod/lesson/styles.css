@@ -37,6 +37,15 @@
     grid-area: main;
 }
 
+.path-mod-lesson.lesson-skin .lesson-skin-region-image {
+    grid-area: image;
+}
+
+.path-mod-lesson.lesson-skin .lesson-skin-region-image img {
+    height: auto;
+    max-width: 100%;
+}
+
 .path-mod-lesson.lesson-skin .lesson-skin-region-main .box,
 .path-mod-lesson.lesson-skin .lesson-skin-region-main .card,
 .path-mod-lesson.lesson-skin .lesson-skin-region-main .contents,

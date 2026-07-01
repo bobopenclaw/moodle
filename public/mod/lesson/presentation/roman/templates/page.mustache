@@ -19,6 +19,11 @@
             {{{score}}}
         </div>
     {{/hasscore}}
+    {{#hasimage}}
+        <figure class="lesson-skin-region lesson-skin-region-image lesson-roman-image">
+            <img src="{{imageurl}}" alt="{{imagealt}}">
+        </figure>
+    {{/hasimage}}
     <main class="lesson-skin-region lesson-skin-region-main">
         {{{maincontentanchor}}}
         {{{content}}}
